@@ -13,45 +13,115 @@ class Player {
   Random r = new Random();
   //letters
   public String letters[] = {"A", "B", "C","D", "E", "F", "G", "H", "I", "J"};
-
+  //Hits
+  int hits = 0;
+  //Counts to see if a ship is fully destroyed
+  int fivecount = 5;
+  int fourcount = 4;
+  int threecount = 3; 
+  int twocount = 2;
  //constructor currently just holding a test value
+ //I never added anything so the constructor is useless
   public Player(int i) {
     test = i;
   }
-
-  public void shoot (String left, int top){
-
-  int left2 = 0;
-
-  for (int z = 0; z < letters.length; z++){
-    if(letters[z].equals(left)){
-      left2 = z;
-      System.out.println("Letter");
+  //returns number of hits to see if there was a win
+  public int wincheck(){
+    return hits;
+  }
+  //used to check if a ship is dead
+  public void deadcheck(){
+    //checks counts to see if it is at zero
+    //if it is it finds all of the ships destroyed parts and converts them to G
+    if(twocount == 0){
+      for (int x = 0; x < 10; x++) {
+      for (int y = 0; y < 10; y++) {
+        if(ships[x][y] == -2){
+          show[x][y] = "G";        
+          }
+      }
+    }
+    twocount = -1;
+    }
+    //the rest all act the same as two count so the comments would be redundant
+    if(threecount == 0){
+      for (int x = 0; x < 10; x++) {
+      for (int y = 0; y < 10; y++) {
+        if(ships[x][y] == -3){
+          show[x][y] = "G";        
+          }
+      }
+    }
+    threecount = -1;
+    }
+    if(fourcount == 0){
+      for (int x = 0; x < 10; x++) {
+      for (int y = 0; y < 10; y++) {
+        if(ships[x][y] == -4){
+          show[x][y] = "G";        
+          }
+      }
+    }
+    fourcount = -1;
+    }
+    if(fivecount == 0){
+      for (int x = 0; x < 10; x++) {
+      for (int y = 0; y < 10; y++) {
+        if(ships[x][y] == -5){
+          show[x][y] = "G";        
+          }
+      }
+    }
+    fivecount = -1;
     }
   }
 
-  if(ships[left2][top] > 0){
-    ships[left2][top] = -1;
-    System.out.println("Shot");
-    } else{
-      ships[left2][top] = -2;
-      System.out.println("Miss");
-    }
+  //Code to shoot at a specific spot
+  //I added way to much and the code is slightly confusing but it works
+  public void shoot (String left, int top){
+  //convert players letter choice to lower case
+  left = left.toLowerCase();
+  int left2 = 0;
 
-    for (int k = 0; k < 10; k++) {
-      for (int l = 0; l < 10; l++) {
-        if(ships[k][l] == -1){
-      show[k][l] = "X";
-        } else if(ships[k][l] == -2){
-          show[k][l] = "-";
-        }
-      }
-      System.out.println();
+  //converts players letter to number so it is compatible with the ship array
+  for (int z = 0; z < letters.length; z++){
+    if(letters[z].toLowerCase().equals(left)){
+      left2 = z;
     }
+  }
+  //checking if a shot was valid
+  //if it is the count of that ship goes down and 
+  //it is converted to a negative number
+  //This is because the dead check uses negative numbers to find which ships to change to G
+  if(ships[left2][top] > 0){
+    if(ships[left2][top] == 2){
+      twocount -= 1;
+    } else if(ships[left2][top] == 3){
+      threecount -= 1;
+    } else if(ships[left2][top] == 4){
+      fourcount -= 1;
+    } else if(ships[left2][top] == 5){
+      fivecount -= 1;
+    }
+    ships[left2][top] *= -1;
+    hits += 1;
+    } 
+    //if it is a miss it is assigned the number -6
+    else if(ships[left2][top] == 0){
+      ships[left2][top] = -6;
+    }
+    //Here the x or - is placed on the board depending on if you hit or missed
+        if(ships[left2][top] < 0 && ships[left2][top] > -6){
+      show[left2][top] = "X";
+        } else if(ships[left2][top] == -6){
+          show[left2][top] = "-";
+        }
     
   }
  
-  //just prints out the board pretty self explanitory
+  //just prints out the board pretty self explanitory'
+  //shows an overlay of the real board because original board is 
+  //an int array and I wanted to have boxes for the ships
   public void printboard() {
     System.out.println();
     System.out.print("*" + "\t\t");
@@ -70,7 +140,8 @@ class Player {
   }
   
   //board generation
-  //might not comment cause even I don't know whats going on
+  //might not comment cause even I don't remember whats going on
+  //As of Januray 26th I still don't remember how I wrote this but it works so...
   public void genboard(){
     int done = 0;
     int fifty = 0;
